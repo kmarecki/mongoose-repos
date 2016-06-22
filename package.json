@@ -1,0 +1,15 @@
+{
+  "name": "mongoose-repos",
+  "version": "0.0.0",
+  "description": "Various Mongoose TypeScript helper classes",
+  "homepage": "",
+  "author": {
+    "name": "Krzysztof Marecki",
+    "email": "marecki.krzysztof@gmail.com",
+    "url": ""
+  },
+  "keywords": [
+    "mongoose",
+    "typescript"
+  ]
+}
