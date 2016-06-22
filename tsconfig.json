@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "declaration": true,
         "module": "commonjs",
+        "target": "es5",
         "sourceMap": true,
-        "allowJs": true
+        "outDir": "dist"
     },
-    "exclude": [
-        "node_modules",
-        "typings"
+    "files": [
+        "src/mongoose-repos.ts"
     ]
 }

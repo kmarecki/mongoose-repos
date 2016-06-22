@@ -11,5 +11,9 @@
   "keywords": [
     "mongoose",
     "typescript"
-  ]
+  ],
+  "dependencies": {
+    "mongoose": "^4.5.1",
+    "underscore": "^1.8.3"
+  }
 }

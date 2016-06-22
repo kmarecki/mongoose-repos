@@ -3,6 +3,8 @@
   "version": false,
   "dependencies": {},
   "globalDependencies": {
-    "node": "registry:dt/node#4.0.0+20160423143914"
+    "mongoose": "registry:dt/mongoose#3.8.5+20160614090725",
+    "node": "registry:dt/node#4.0.0+20160423143914",
+    "underscore": "registry:dt/underscore#1.7.0+20160622050840"
   }
 }
