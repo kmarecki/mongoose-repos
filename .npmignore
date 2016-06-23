@@ -1,8 +1,11 @@
 node_modules
 src
 typings
-.vscode
 *.log
 tsconfig.json
 tslint.json
 typings.json
+.vscode
+.gitignore
+.npmignore
+.typingsrc
