@@ -3,3 +3,6 @@ src
 typings
 .vscode
 *.log
+tsconfig.json
+tslint.json
+typings.json
