@@ -1,6 +1,6 @@
 {
   "name": "mongoose-repos",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Various Mongoose TypeScript helper classes",
   "homepage": "",
   "author": {
