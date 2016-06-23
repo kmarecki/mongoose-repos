@@ -1,4 +1,3 @@
-/// <reference path="../../typings/index.d.ts"/>
 import * as mongoose from 'mongoose';
 import * as _ from 'underscore';
 
