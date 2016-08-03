@@ -1,7 +1,14 @@
 import * as mongoose from 'mongoose';
+import * as autoIncrement from 'mongoose-auto-increment';
+
 import * as _ from 'underscore';
 
 import {MongoConfiguration} from './configuration';
+import {MongoDb} from './db';
+
+export interface SchemaOptions {
+    useAutoIncrement?: boolean;
+}
 
 export abstract class MongoRepository {
 
@@ -13,26 +20,7 @@ export abstract class MongoRepository {
     }
 
     protected connect(): void {
-        mongoose.set('debug', MongoConfiguration.debug);
-        if (mongoose.connection.readyState === 0) {
-            mongoose.connect(this.uri);
-
-            mongoose.connection.on('connected', () => {
-                console.log('Mongoose default connection open to ' + this.uri);
-            });
-            mongoose.connection.on('error', (err) => {
-                console.log('Mongoose default connection error: ' + err);
-            });
-            mongoose.connection.on('disconnected', function () {
-                console.log('Mongoose default connection disconnected');
-            });
-            process.on('SIGINT', function () {
-                mongoose.connection.close(function () {
-                    console.log('Mongoose default connection disconnected through app termination');
-                    process.exit(0);
-                });
-            });
-        }
+        MongoDb.open();
     }
 
     protected addPreSaveKindPlugin<T extends mongoose.Document>(model: mongoose.Model<T>): void {
@@ -44,10 +32,14 @@ export abstract class MongoRepository {
         });
     }
 
-    protected addModel<T extends mongoose.Document>(modelName: string, schema: mongoose.Schema): mongoose.Model<T> {
-        return (!_.contains(mongoose.modelNames(), modelName)) ?
+    protected addModel<T extends mongoose.Document>(modelName: string, schema: mongoose.Schema, options?: SchemaOptions): mongoose.Model<T> {
+        let model = (!_.contains(mongoose.modelNames(), modelName)) ?
             mongoose.model<T>(modelName, schema) :
             mongoose.model<T>(modelName);
+        if (MongoConfiguration.useAutoIncrement && options && options.useAutoIncrement) {
+            autoIncrement.plugin(schema, modelName);
+        }
+        return model;
     }
 
     protected addModelDescriminator<T extends mongoose.Document>(
