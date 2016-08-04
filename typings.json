@@ -3,6 +3,7 @@
   "version": false,
   "dependencies": {},
   "globalDependencies": {
+    "core-js": "registry:dt/core-js#0.0.0+20160602141332",
     "mongoose": "registry:dt/mongoose#3.8.5+20160614090725",
     "mongoose-auto-increment": "registry:dt/mongoose-auto-increment#5.0.1+20151122044555",
     "node": "registry:dt/node#4.0.0+20160423143914",
