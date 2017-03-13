@@ -1,6 +1,6 @@
 {
   "name": "mongoose-repos",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Various Mongoose TypeScript helper classes",
   "homepage": "",
   "author": {
@@ -13,7 +13,9 @@
     "typescript"
   ],
   "dependencies": {
-    "mongoose": "^4.5.1",
+    "@types/mongoose": "^4.7.8",
+    "@types/node": "^6.0.65",
+    "mongoose": "^4.7.8",
     "mongoose-auto-increment": "^5.0.1",
     "underscore": "^1.8.3"
   },

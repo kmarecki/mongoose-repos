@@ -28,6 +28,12 @@ export abstract class MongoRepository {
         MongoDb.open();
     }
 
+    protected findOne<T extends mongoose.Document>(
+        model: mongoose.Model<T>, query: any, callback: (err: Error, result: T) => any) {
+        MongoDb.open()
+            .then(() => model.findOne(query, callback))
+            .catch((err) => callback(err, undefined)); 
+    }
     protected findOneAndSave<T extends mongoose.Document>(
         model: mongoose.Model<T>, query: any, update: any, callback: (err: Error, result: T) => any) {
         this.connect();

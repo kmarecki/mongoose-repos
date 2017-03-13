@@ -1,9 +1,20 @@
 import * as mongoose from 'mongoose';
 import * as autoIncrement from 'mongoose-auto-increment';
 
-import {MongoConfiguration} from './configuration';
+import { MongoConfiguration } from './configuration';
 
 export class MongoDb {
+
+    private static logger: (message: string) => any = (msg) => console.log(msg);
+
+    static log(message: string): void {
+        if (MongoConfiguration.useLogger) {
+            if (MongoDb.logger) {
+                MongoDb.logger(message);
+            }
+        }
+    }
+
     static dropDatabase(call: (err, result) => any): void {
         let uri = MongoConfiguration.uri;
         let conn = mongoose.connect(uri);
@@ -11,30 +22,36 @@ export class MongoDb {
         call(undefined, undefined);
     }
 
-    static open(): void {
+    static open(): Promise<{}> {
         mongoose.set('debug', MongoConfiguration.debug);
         if (mongoose.connection.readyState === 0) {
-            mongoose.connect(MongoConfiguration.uri);
 
             if (MongoConfiguration.useAutoIncrement) {
                 autoIncrement.initialize(mongoose.connection);
             }
 
-            mongoose.connection.on('connected', () => {
-                console.log('Mongoose default connection open to ' + MongoConfiguration.uri);
-            });
-            mongoose.connection.on('error', (err) => {
-                console.log('Mongoose default connection error: ' + err);
-            });
-            mongoose.connection.on('disconnected', function () {
-                console.log('Mongoose default connection disconnected');
+            mongoose.connection.on('disconnected', () => {
+                MongoDb.log('Mongoose default connection disconnected');
             });
             process.on('SIGINT', function () {
-                mongoose.connection.close(function () {
-                    console.log('Mongoose default connection disconnected through app termination');
+                mongoose.connection.close(() => {
+                    MongoDb.log('Mongoose default connection disconnected through app termination.');
                     process.exit(0);
                 });
             });
+            return new Promise((resolve, reject) => {
+                mongoose.connect(MongoConfiguration.uri)
+                    .then(() => {
+                        MongoDb.log(`Mongoose default connection open to : ${MongoConfiguration.uri}`);
+                        resolve();
+                    })
+                    .catch(err => {
+                        MongoDb.log(`Mongoose default connection errorx: ${err}`);
+                        reject(err);
+                    });
+            });
         }
+
+        return new Promise((resolve, reject) => resolve());
     }
 }
