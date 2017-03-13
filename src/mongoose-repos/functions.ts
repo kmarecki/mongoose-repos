@@ -1,4 +1,4 @@
-import {MongoDb} from './db';
+import { MongoDb } from './db';
 
 export function defaultHandler(err: any, callback: (err: any) => any): void {
     if (err) {
@@ -11,7 +11,9 @@ export function defaultResultHandler(err: any, result: any, callback: (err: any,
     if (err == null && result != null) {
         callback(null, result);
     } else {
-        MongoDb.log(err);
+        if (err) {
+            MongoDb.log(err);
+        }
         callback(err, result);
     }
 }
@@ -29,7 +31,9 @@ export function defaultResultArrayHandler(err: any, result: any[], callback: (er
         }
         callback(null, list);
     } else {
-        MongoDb.log(err);
+        if (err) {
+            MongoDb.log(err);
+        }
         callback(err, null);
     }
 }

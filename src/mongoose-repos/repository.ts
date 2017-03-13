@@ -3,8 +3,8 @@ import * as autoIncrement from 'mongoose-auto-increment';
 
 import * as _ from 'underscore';
 
-import {MongoConfiguration} from './configuration';
-import {MongoDb} from './db';
+import { MongoConfiguration } from './configuration';
+import { MongoDb } from './db';
 
 export interface SchemaOptions {
     autoIncrement?: boolean;
@@ -24,35 +24,43 @@ export abstract class MongoRepository {
         this.addSchemas();
     }
 
-    protected connect(): void {
-        MongoDb.open();
+    protected connect(): Promise<{}> {
+        return MongoDb.open();
     }
 
     protected findOne<T extends mongoose.Document>(
-        model: mongoose.Model<T>, query: any, callback: (err: Error, result: T) => any) {
-        MongoDb.open()
+        model: mongoose.Model<T>, query: any, callback: (err: Error, result: T) => any): void {
+        this.connect()
             .then(() => model.findOne(query, callback))
-            .catch((err) => callback(err, undefined)); 
+            .catch((err) => callback(err, null));
     }
     protected findOneAndSave<T extends mongoose.Document>(
-        model: mongoose.Model<T>, query: any, update: any, callback: (err: Error, result: T) => any) {
-        this.connect();
-        model.findOne(query, (err: Error, result: T) => {
-            if (err) {
-                callback(err, undefined);
-            } else {
-                if (result) {
-                    Object.assign(result, update);
-                    result.save(callback);
+        model: mongoose.Model<T>, query: any, update: any, callback: (err: Error, result: T) => any): void {
+        this.connect()
+            .then(() => model.findOne(query, (err: Error, result: T) => {
+                if (err) {
+                    callback(err, null);
                 } else {
-                    model.create(update, callback);
+                    if (result) {
+                        Object.assign(result, update);
+                        result.save(callback);
+                    } else {
+                        model.create(update, callback);
+                    }
                 }
-            }
-        });
+            }))
+            .catch((err) => callback(err, null));
+    }
+
+    protected remove<T extends mongoose.Document>(
+        model: mongoose.Model<T>, query: any, callback: (err: Error) => any): void {
+            this.connect()
+                .then(() => model.remove(query, (err) => callback(err)))
+                .catch((err) => callback(err));
     }
 
     protected addPreSaveKindPlugin<T extends mongoose.Document>(model: mongoose.Model<T>): void {
-        model.schema.plugin((schema: mongoose.Schema, {}) => {
+        model.schema.plugin((schema: mongoose.Schema, { }) => {
             schema.pre('save', function (next) {
                 this.kind = schema.path;
                 next();

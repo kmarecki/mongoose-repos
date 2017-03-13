@@ -22,6 +22,10 @@ export class MongoDb {
         call(undefined, undefined);
     }
 
+    static configure() : void {
+        (<any>mongoose).Promise = global.Promise;
+    }
+
     static open(): Promise<{}> {
         mongoose.set('debug', MongoConfiguration.debug);
         if (mongoose.connection.readyState === 0) {
@@ -46,7 +50,7 @@ export class MongoDb {
                         resolve();
                     })
                     .catch(err => {
-                        MongoDb.log(`Mongoose default connection errorx: ${err}`);
+                        MongoDb.log(`Mongoose default connection error: ${err}`);
                         reject(err);
                     });
             });
