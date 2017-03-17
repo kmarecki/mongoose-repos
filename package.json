@@ -13,8 +13,6 @@
     "typescript"
   ],
   "dependencies": {
-    "@types/mongoose": "^4.7.8",
-    "@types/node": "^6.0.65",
     "mongoose": "^4.7.8",
     "mongoose-auto-increment": "^5.0.1",
     "underscore": "^1.8.3"
