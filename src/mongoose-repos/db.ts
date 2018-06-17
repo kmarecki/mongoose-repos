@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import * as autoIncrement from 'mongoose-auto-increment';
 
 import { MongoConfiguration } from './configuration';
 
@@ -17,9 +16,11 @@ export class MongoDb {
 
     static dropDatabase(call: (err, result) => any): void {
         let uri = MongoConfiguration.uri;
-        let conn = mongoose.connect(uri);
-        conn.connection.db.dropDatabase();
-        call(undefined, undefined);
+        mongoose.connect(uri).then(
+        () => {
+            mongoose.connection.db.dropDatabase();
+            call(undefined, undefined);
+        });
     }
 
     static configure() : void {
@@ -29,10 +30,6 @@ export class MongoDb {
     static open(): Promise<{}> {
         mongoose.set('debug', MongoConfiguration.debug);
         if (mongoose.connection.readyState === 0) {
-
-            if (MongoConfiguration.useAutoIncrement) {
-                autoIncrement.initialize(mongoose.connection);
-            }
 
             mongoose.connection.on('disconnected', () => {
                 MongoDb.log('Mongoose default connection disconnected');
